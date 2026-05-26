@@ -14,8 +14,12 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
+-- Volcando estructura de base de datos para negociodigital
+CREATE DATABASE IF NOT EXISTS `negociodigital` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `negociodigital`;
+
 -- Volcando estructura para tabla negociodigital.despacho
-DROP TABLE IF EXISTS `despacho`;
 CREATE TABLE IF NOT EXISTS `despacho` (
   `idDespacho` int NOT NULL,
   `fechaDespacho` date DEFAULT NULL,
@@ -65,7 +69,6 @@ INSERT INTO `despacho` (`idDespacho`, `fechaDespacho`, `numPedido`, `cedulaEmple
 	(829, '2026-05-19', 529, 75000030, '900123456-10');
 
 -- Volcando estructura para tabla negociodigital.direccion_usuario
-DROP TABLE IF EXISTS `direccion_usuario`;
 CREATE TABLE IF NOT EXISTS `direccion_usuario` (
   `idDireccion` varchar(20) NOT NULL,
   `nomenclatura` varchar(40) NOT NULL,
@@ -113,7 +116,6 @@ INSERT INTO `direccion_usuario` (`idDireccion`, `nomenclatura`, `numDirecc`, `ba
 	('DIR-129', 'Carrera 15', '#72-31', 'Unilago', 'Bogotá', 'Bogotá D.C.', 1053800020);
 
 -- Volcando estructura para tabla negociodigital.empleado
-DROP TABLE IF EXISTS `empleado`;
 CREATE TABLE IF NOT EXISTS `empleado` (
   `cedulaEmpleado` int NOT NULL,
   `nombreEmpleado` varchar(60) NOT NULL,
@@ -159,7 +161,6 @@ INSERT INTO `empleado` (`cedulaEmpleado`, `nombreEmpleado`, `celularEmpleado`, `
 	(75000030, 'Blanca Nubia Vargas', '3152233556', 'blancavargas@gmail.com', '900123456-10');
 
 -- Volcando estructura para tabla negociodigital.pedido
-DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE IF NOT EXISTS `pedido` (
   `numPedido` int NOT NULL,
   `fechaPedido` date NOT NULL,
@@ -170,41 +171,44 @@ CREATE TABLE IF NOT EXISTS `pedido` (
   CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`cedulaUsu`) REFERENCES `usuario` (`cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.pedido: ~30 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.pedido: ~34 rows (aproximadamente)
 INSERT INTO `pedido` (`numPedido`, `fechaPedido`, `totalPedido`, `cedulaUsu`) VALUES
-	(500, '2026-05-12', 240000, 23456789),
-	(501, '2026-05-04', 500000, 1053800005),
-	(502, '2026-05-18', 750000, 1053800010),
-	(503, '2026-05-09', 320000, 45678901),
-	(504, '2026-05-22', 1300000, 1053800003),
-	(505, '2026-05-15', 2450000, 56789012),
-	(506, '2026-05-11', 560000, 1075209378),
-	(507, '2026-05-03', 220000, 1053800014),
-	(508, '2026-05-14', 195000, 1053800018),
-	(509, '2026-05-25', 110000, 67890123),
-	(510, '2026-05-07', 360000, 1053800009),
-	(511, '2026-05-16', 240000, 78901234),
-	(512, '2026-05-10', 390000, 1053800019),
-	(513, '2026-05-22', 140000, 89012345),
-	(514, '2026-05-13', 370000, 1053800002),
-	(515, '2026-05-17', 420000, 90123456),
-	(516, '2026-05-02', 420000, 1093765231),
-	(517, '2026-05-10', 2700000, 1053800011),
-	(518, '2026-05-21', 450000, 1053800007),
-	(519, '2026-05-16', 640000, 1053800015),
-	(520, '2026-05-13', 680000, 1053800016),
-	(521, '2026-05-05', 190000, 1053800001),
-	(522, '2026-05-11', 290000, 1053800020),
-	(523, '2026-05-07', 135000, 1053800004),
-	(524, '2026-05-22', 55000, 1053800012),
-	(525, '2026-05-20', 350000, 1053800013),
-	(526, '2026-05-21', 125000, 1053800006),
-	(527, '2026-05-06', 180000, 1053800017),
-	(528, '2026-05-16', 70000, 1053800008),
-	(529, '2026-05-19', 50000, 23456789);
+	(500, '2025-12-15', 240000, 23456789),
+	(501, '2025-12-15', 500000, 1053800005),
+	(502, '2025-12-15', 750000, 1053800010),
+	(503, '2025-12-15', 320000, 45678901),
+	(504, '2025-12-15', 1300000, 1053800003),
+	(505, '2025-12-15', 2450000, 56789012),
+	(506, '2026-01-23', 560000, 1075209378),
+	(507, '2026-01-23', 220000, 1053800014),
+	(508, '2026-01-23', 195000, 1053800018),
+	(509, '2026-01-23', 110000, 67890123),
+	(510, '2026-01-23', 360000, 1053800009),
+	(511, '2026-01-23', 240000, 78901234),
+	(512, '2026-02-09', 390000, 1053800019),
+	(513, '2026-02-09', 140000, 89012345),
+	(514, '2026-02-09', 370000, 1053800002),
+	(515, '2026-02-09', 420000, 90123456),
+	(516, '2026-02-09', 420000, 1093765231),
+	(517, '2026-02-09', 2700000, 1053800011),
+	(518, '2026-03-20', 450000, 1053800007),
+	(519, '2026-03-20', 640000, 1053800015),
+	(520, '2026-03-20', 680000, 1053800016),
+	(521, '2026-03-20', 190000, 1053800001),
+	(522, '2026-03-20', 290000, 1053800020),
+	(523, '2026-03-20', 135000, 1053800004),
+	(524, '2026-03-20', 55000, 1053800012),
+	(525, '2026-03-20', 350000, 1053800013),
+	(526, '2026-04-02', 125000, 1053800006),
+	(527, '2026-04-02', 180000, 1053800017),
+	(528, '2026-04-02', 70000, 1053800008),
+	(529, '2026-04-02', 50000, 23456789),
+	(990, '2026-05-26', 85000, 23456789),
+	(991, '2026-05-26', 120000, 34567890),
+	(992, '2026-05-26', 450000, 45678901),
+	(999, '2026-05-26', 150000, 23456789);
 
 -- Volcando estructura para tabla negociodigital.pedido_producto
-DROP TABLE IF EXISTS `pedido_producto`;
 CREATE TABLE IF NOT EXISTS `pedido_producto` (
   `numPedido` int NOT NULL,
   `ref` varchar(20) NOT NULL,
@@ -250,7 +254,6 @@ INSERT INTO `pedido_producto` (`numPedido`, `ref`, `cantidadProdPedido`, `valorP
 	(529, 'REF-229', 2, 25000);
 
 -- Volcando estructura para tabla negociodigital.producto
-DROP TABLE IF EXISTS `producto`;
 CREATE TABLE IF NOT EXISTS `producto` (
   `ref` varchar(20) NOT NULL,
   `descripcion` varchar(60) NOT NULL,
@@ -299,7 +302,6 @@ INSERT INTO `producto` (`ref`, `descripcion`, `lineaProducto`, `detalles`, `prec
 	('REF-229', 'Kit Limpieza Pantallas Celular', 'Accesorios', 'Líquido antiestático y paño de microfibra', 25000, '1 Mes', 8000, '900123456-10');
 
 -- Volcando estructura para tabla negociodigital.tienda_proveedor
-DROP TABLE IF EXISTS `tienda_proveedor`;
 CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
   `nitTienda` varchar(20) NOT NULL,
   `nombreTienda` varchar(60) NOT NULL,
@@ -323,7 +325,6 @@ INSERT INTO `tienda_proveedor` (`nitTienda`, `nombreTienda`, `direccionTienda`, 
 	('900123456-9', 'Boutique Dynamic', 'C.C. Cable Plaza Local 105', '6068749090', 'info@dynamicboutique.com');
 
 -- Volcando estructura para tabla negociodigital.usuario
-DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE IF NOT EXISTS `usuario` (
   `cedula` int NOT NULL,
   `nombreUsu` varchar(60) NOT NULL,
