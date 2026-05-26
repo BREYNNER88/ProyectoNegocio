@@ -14,7 +14,12 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Volcando estructura para tabla negociodigital1.despacho
+
+-- Volcando estructura de base de datos para negociodigital
+CREATE DATABASE IF NOT EXISTS `negociodigital` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `negociodigital`;
+
+-- Volcando estructura para tabla negociodigital.despacho
 CREATE TABLE IF NOT EXISTS `despacho` (
   `idDespacho` int NOT NULL,
   `fechaDespacho` date DEFAULT NULL,
@@ -30,9 +35,9 @@ CREATE TABLE IF NOT EXISTS `despacho` (
   CONSTRAINT `despacho_ibfk_3` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.despacho: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.despacho: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla negociodigital1.direccion_usuario
+-- Volcando estructura para tabla negociodigital.direccion_usuario
 CREATE TABLE IF NOT EXISTS `direccion_usuario` (
   `idDireccion` varchar(20) NOT NULL,
   `nomenclatura` varchar(40) NOT NULL,
@@ -46,9 +51,9 @@ CREATE TABLE IF NOT EXISTS `direccion_usuario` (
   CONSTRAINT `direccion_usuario_ibfk_1` FOREIGN KEY (`cedulaUsu`) REFERENCES `usuario` (`cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.direccion_usuario: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.direccion_usuario: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla negociodigital1.empleado
+-- Volcando estructura para tabla negociodigital.empleado
 CREATE TABLE IF NOT EXISTS `empleado` (
   `cedulaEmpleado` int NOT NULL,
   `nombreEmpleado` varchar(60) NOT NULL,
@@ -60,9 +65,9 @@ CREATE TABLE IF NOT EXISTS `empleado` (
   CONSTRAINT `empleado_ibfk_1` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.empleado: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.empleado: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla negociodigital1.pedido
+-- Volcando estructura para tabla negociodigital.pedido
 CREATE TABLE IF NOT EXISTS `pedido` (
   `numPedido` int NOT NULL,
   `fechaPedido` date NOT NULL,
@@ -73,9 +78,9 @@ CREATE TABLE IF NOT EXISTS `pedido` (
   CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`cedulaUsu`) REFERENCES `usuario` (`cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.pedido: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.pedido: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla negociodigital1.pedido_producto
+-- Volcando estructura para tabla negociodigital.pedido_producto
 CREATE TABLE IF NOT EXISTS `pedido_producto` (
   `numPedido` int NOT NULL,
   `ref` varchar(20) NOT NULL,
@@ -87,9 +92,9 @@ CREATE TABLE IF NOT EXISTS `pedido_producto` (
   CONSTRAINT `pedido_producto_ibfk_2` FOREIGN KEY (`ref`) REFERENCES `producto` (`ref`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.pedido_producto: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.pedido_producto: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla negociodigital1.producto
+-- Volcando estructura para tabla negociodigital.producto
 CREATE TABLE IF NOT EXISTS `producto` (
   `ref` varchar(20) NOT NULL,
   `descripcion` varchar(60) NOT NULL,
@@ -104,9 +109,9 @@ CREATE TABLE IF NOT EXISTS `producto` (
   CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.producto: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.producto: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla negociodigital1.tienda_proveedor
+-- Volcando estructura para tabla negociodigital.tienda_proveedor
 CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
   `nitTienda` varchar(20) NOT NULL,
   `nombreTienda` varchar(60) NOT NULL,
@@ -116,19 +121,30 @@ CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
   PRIMARY KEY (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.tienda_proveedor: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.tienda_proveedor: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla negociodigital1.usuario
+-- Volcando estructura para tabla negociodigital.usuario
 CREATE TABLE IF NOT EXISTS `usuario` (
   `cedula` int NOT NULL,
-  `nombreUsu` varchar(60) NOT NULL,
-  `telefonoFijo` varchar(20) NOT NULL,
+  `nombreUsu` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `telefonoFijo` varchar(20) DEFAULT NULL,
   `celularUsuario` varchar(20) NOT NULL,
   `emailUsuario` varchar(60) NOT NULL,
   PRIMARY KEY (`cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital1.usuario: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.usuario: ~10 rows (aproximadamente)
+INSERT INTO `usuario` (`cedula`, `nombreUsu`, `telefonoFijo`, `celularUsuario`, `emailUsuario`) VALUES
+	(23456789, 'María López', '2100-2222', '3123334455', 'mlopez@email.com'),
+	(34567890, 'Juan Martínez', '2100-3333', '3134445566', 'jmartinez@email.com'),
+	(45678901, 'Ana Rodríguez', NULL, '3145556677', 'arodriguez@email.com'),
+	(56789012, 'Luis Fernández', '2100-5555', '3156667788', 'lfernandez@email.com'),
+	(67890123, 'Laura Gómez', NULL, '3167778899', 'lgomez@email.com'),
+	(78901234, 'Diego Sánchez', '2100-7777', '3178889900', 'dsanchez@email.com'),
+	(89012345, 'Sofía Díaz', '2100-8888', '3189990011', 'sdiaz@email.com'),
+	(90123456, 'Javier Ruiz', '2100-9999', '3190001122', 'jruiz@email.com'),
+	(1075209378, 'Jhon Pérez', NULL, '3333928910', 'jhon.pe@email.com'),
+	(1093765231, 'Valentina Herrera', '2100-1010', '3201112233', 'vherrera@email.com');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
