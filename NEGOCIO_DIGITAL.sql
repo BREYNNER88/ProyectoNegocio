@@ -40,6 +40,17 @@ CREATE TABLE `clientes_mas_gastos` (
 	`total_gastado` DOUBLE NULL
 ) ENGINE=MyISAM;
 
+-- Volcando estructura para vista negociodigital.clientes_mayor_al_promedio
+DROP VIEW IF EXISTS `clientes_mayor_al_promedio`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `clientes_mayor_al_promedio` (
+	`cliente` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`total_pedidos` BIGINT NOT NULL,
+	`gasto_promedio_por_pedido` DOUBLE NULL,
+	`pedido_mas_alto` FLOAT NULL,
+	`gasto_total` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para tabla negociodigital.despacho
 DROP TABLE IF EXISTS `despacho`;
 CREATE TABLE IF NOT EXISTS `despacho` (
@@ -230,6 +241,18 @@ CREATE TABLE `info_tienda_ventas_produs` (
 	`ref` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`Producto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`unidades_vendidas` DECIMAL(32,0) NULL,
+	`ingresos_totales` DOUBLE NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista negociodigital.lineas_con_ingreso_mayor_al_promedio
+DROP VIEW IF EXISTS `lineas_con_ingreso_mayor_al_promedio`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `lineas_con_ingreso_mayor_al_promedio` (
+	`lineaProducto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`cantidad_productos` BIGINT NOT NULL,
+	`unidades_totales_vendidas` DECIMAL(32,0) NULL,
+	`precio_promedio_venta` DOUBLE NULL,
+	`pedido_mas_alto` FLOAT NULL,
 	`ingresos_totales` DOUBLE NULL
 ) ENGINE=MyISAM;
 
@@ -515,6 +538,10 @@ DROP TABLE IF EXISTS `clientes_mas_gastos`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `clientes_mas_gastos` AS select `u`.`nombreUsu` AS `nombreUsu`,sum(`p`.`totalPedido`) AS `total_gastado` from (`usuario` `u` join `pedido` `p` on((`u`.`cedula` = `p`.`cedulaUsu`))) group by `u`.`cedula` order by `total_gastado` desc limit 5;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `clientes_mayor_al_promedio`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `clientes_mayor_al_promedio` AS select `u`.`nombreUsu` AS `cliente`,count(distinct `ped`.`numPedido`) AS `total_pedidos`,avg(`ped`.`totalPedido`) AS `gasto_promedio_por_pedido`,max(`ped`.`totalPedido`) AS `pedido_mas_alto`,sum(`ped`.`totalPedido`) AS `gasto_total` from (`usuario` `u` join `pedido` `ped` on((`u`.`cedula` = `ped`.`cedulaUsu`))) group by `u`.`cedula` having (sum(`ped`.`totalPedido`) > (select avg(`promedios`.`gasto_por_usuario`) from (select sum(`ped2`.`totalPedido`) AS `gasto_por_usuario` from `pedido` `ped2` group by `ped2`.`cedulaUsu`) `promedios`)) order by `gasto_total` desc;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `ganancias_acumuladas_ciudades`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `ganancias_acumuladas_ciudades` AS select `d`.`ciudadDirecc` AS `Ciudad`,sum((`pp`.`cantidadProdPedido` * (`pp`.`valorProdPedido` - `prod`.`costoCompra`))) AS `Ganancia` from (((`direccion_usuario` `d` left join `pedido` `p` on((`d`.`cedulaUsu` = `p`.`cedulaUsu`))) left join `pedido_producto` `pp` on((`p`.`numPedido` = `pp`.`numPedido`))) left join `producto` `prod` on((`pp`.`ref` = `prod`.`ref`))) group by `d`.`ciudadDirecc`;
 
@@ -533,6 +560,10 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `info_tienda_ventas` AS sel
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `info_tienda_ventas_produs`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `info_tienda_ventas_produs` AS select `p`.`ref` AS `ref`,`p`.`descripcion` AS `Producto`,sum(`pp`.`cantidadProdPedido`) AS `unidades_vendidas`,sum((`pp`.`cantidadProdPedido` * `pp`.`valorProdPedido`)) AS `ingresos_totales` from (`producto` `p` join `pedido_producto` `pp` on((`p`.`ref` = `pp`.`ref`))) group by `p`.`ref` order by `ingresos_totales` desc;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `lineas_con_ingreso_mayor_al_promedio`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `lineas_con_ingreso_mayor_al_promedio` AS select `pr`.`lineaProducto` AS `lineaProducto`,count(distinct `pr`.`ref`) AS `cantidad_productos`,sum(`pp`.`cantidadProdPedido`) AS `unidades_totales_vendidas`,round(avg(`pp`.`valorProdPedido`),2) AS `precio_promedio_venta`,max(`ped`.`totalPedido`) AS `pedido_mas_alto`,sum((`pp`.`cantidadProdPedido` * `pp`.`valorProdPedido`)) AS `ingresos_totales` from ((`producto` `pr` join `pedido_producto` `pp` on((`pr`.`ref` = `pp`.`ref`))) join `pedido` `ped` on((`pp`.`numPedido` = `ped`.`numPedido`))) group by `pr`.`lineaProducto` having (sum((`pp`.`cantidadProdPedido` * `pp`.`valorProdPedido`)) > (select avg(`promedios`.`ingresos_linea`) from (select sum((`pp2`.`cantidadProdPedido` * `pp2`.`valorProdPedido`)) AS `ingresos_linea` from (`producto` `pr2` join `pedido_producto` `pp2` on((`pr2`.`ref` = `pp2`.`ref`))) group by `pr2`.`lineaProducto`) `promedios`)) order by `ingresos_totales` desc;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `mas_despachos`;
