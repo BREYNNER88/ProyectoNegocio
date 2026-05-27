@@ -19,6 +19,27 @@
 CREATE DATABASE IF NOT EXISTS `negociodigital` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `negociodigital`;
 
+-- Volcando estructura para vista negociodigital.catalogo_productos
+DROP VIEW IF EXISTS `catalogo_productos`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `catalogo_productos` (
+	`Proveedor` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Linea` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Referencia` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Producto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Detalles` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Precio` FLOAT NOT NULL,
+	`Garantia` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci'
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista negociodigital.clientes_mas_gastos
+DROP VIEW IF EXISTS `clientes_mas_gastos`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `clientes_mas_gastos` (
+	`nombreUsu` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`total_gastado` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para tabla negociodigital.despacho
 DROP TABLE IF EXISTS `despacho`;
 CREATE TABLE IF NOT EXISTS `despacho` (
@@ -36,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `despacho` (
   CONSTRAINT `despacho_ibfk_3` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.despacho: ~34 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.despacho: ~30 rows (aproximadamente)
 INSERT INTO `despacho` (`idDespacho`, `fechaDespacho`, `numPedido`, `cedulaEmpleado`, `nitTienda`) VALUES
 	(800, '2026-05-12', 500, 75000001, '900123456-1'),
 	(801, '2026-05-04', 501, 75000012, '900123456-2'),
@@ -167,6 +188,24 @@ INSERT INTO `empleado` (`cedulaEmpleado`, `nombreEmpleado`, `celularEmpleado`, `
 	(75000029, 'William de J. Ángel', '3157788334', 'williamangel@gmail.com', '900123456-9'),
 	(75000030, 'Blanca Nubia Vargas', '3152233556', 'blancavargas@gmail.com', '900123456-10');
 
+-- Volcando estructura para vista negociodigital.ganancias_acumuladas_ciudades
+DROP VIEW IF EXISTS `ganancias_acumuladas_ciudades`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `ganancias_acumuladas_ciudades` (
+	`Ciudad` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Ganancia` DOUBLE NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista negociodigital.ganancias_acumuladas_cliente
+DROP VIEW IF EXISTS `ganancias_acumuladas_cliente`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `ganancias_acumuladas_cliente` (
+	`Cliente` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Pedidos` BIGINT NOT NULL,
+	`Ganancia` DOUBLE NULL,
+	`Promedio` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para vista negociodigital.informe_por_periodo
 DROP VIEW IF EXISTS `informe_por_periodo`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
@@ -194,6 +233,24 @@ CREATE TABLE `info_tienda_ventas_produs` (
 	`ingresos_totales` DOUBLE NULL
 ) ENGINE=MyISAM;
 
+-- Volcando estructura para vista negociodigital.mas_despachos
+DROP VIEW IF EXISTS `mas_despachos`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `mas_despachos` (
+	`nombreEmpleado` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`nombreTienda` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`total_despachos` BIGINT NOT NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista negociodigital.mes_mas_ventas
+DROP VIEW IF EXISTS `mes_mas_ventas`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `mes_mas_ventas` (
+	`anno` YEAR NULL,
+	`mes` INT NULL,
+	`total_ventas` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para tabla negociodigital.pedido
 DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE IF NOT EXISTS `pedido` (
@@ -206,7 +263,7 @@ CREATE TABLE IF NOT EXISTS `pedido` (
   CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`cedulaUsu`) REFERENCES `usuario` (`cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.pedido: ~34 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.pedido: ~30 rows (aproximadamente)
 INSERT INTO `pedido` (`numPedido`, `fechaPedido`, `totalPedido`, `cedulaUsu`) VALUES
 	(500, '2025-12-15', 240000, 23456789),
 	(501, '2025-12-15', 500000, 1053800005),
@@ -266,7 +323,7 @@ CREATE TABLE IF NOT EXISTS `pedido_producto` (
   CONSTRAINT `pedido_producto_ibfk_2` FOREIGN KEY (`ref`) REFERENCES `producto` (`ref`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.pedido_producto: ~30 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.pedido_producto: ~0 rows (aproximadamente)
 INSERT INTO `pedido_producto` (`numPedido`, `ref`, `cantidadProdPedido`, `valorProdPedido`) VALUES
 	(500, 'REF-200', 2, 120000),
 	(501, 'REF-201', 2, 250000),
@@ -315,7 +372,7 @@ CREATE TABLE IF NOT EXISTS `producto` (
   CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.producto: ~30 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.producto: ~0 rows (aproximadamente)
 INSERT INTO `producto` (`ref`, `descripcion`, `lineaProducto`, `detalles`, `precio`, `tiempoGarantia`, `costoCompra`, `nitTienda`) VALUES
 	('REF-200', 'Mouse Gamer RGB Pro', 'Tecnología', 'Alta resolución 16000 DPI, Ergonómico', 120000, '1 Año', 75000, '900123456-1'),
 	('REF-201', 'Teclado Mecánico Retroiluminado', 'Tecnología', 'Switch azul, Anti-ghosting completo', 250000, '1 Año', 150000, '900123456-2'),
@@ -348,6 +405,29 @@ INSERT INTO `producto` (`ref`, `descripcion`, `lineaProducto`, `detalles`, `prec
 	('REF-228', 'Cable HDMI de Alta Velocidad 4K', 'Accesorios', 'Soporta resolución 4K a 60Hz, longitud 3m', 35000, '6 Meses', 12000, '900123456-9'),
 	('REF-229', 'Kit Limpieza Pantallas Celular', 'Accesorios', 'Líquido antiestático y paño de microfibra', 25000, '1 Mes', 8000, '900123456-10');
 
+-- Volcando estructura para vista negociodigital.productos_vendidos_mayor_al_promedio
+DROP VIEW IF EXISTS `productos_vendidos_mayor_al_promedio`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `productos_vendidos_mayor_al_promedio` (
+	`producto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`lineaProducto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`nombreTienda` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`unidades_vendidas` DECIMAL(32,0) NULL,
+	`precio_promedio_venta` DOUBLE NULL,
+	`mayor_cantidad_en_un_pedido` INT NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista negociodigital.tiendas_superior_al_promedio
+DROP VIEW IF EXISTS `tiendas_superior_al_promedio`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `tiendas_superior_al_promedio` (
+	`nombreTienda` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`total_pedidos` BIGINT NOT NULL,
+	`promedio_pedido` DOUBLE NULL,
+	`pedido_mas_alto` FLOAT NULL,
+	`total_recaudado` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para tabla negociodigital.tienda_proveedor
 DROP TABLE IF EXISTS `tienda_proveedor`;
 CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
@@ -359,7 +439,7 @@ CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
   PRIMARY KEY (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.tienda_proveedor: ~10 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.tienda_proveedor: ~6 rows (aproximadamente)
 INSERT INTO `tienda_proveedor` (`nitTienda`, `nombreTienda`, `direccionTienda`, `telTienda`, `emailTienda`) VALUES
 	('900123456-1', 'TecnoManizales SAS', 'Av. Santander #55-12', '6068851010', 'contacto@tecnomanizales.com'),
 	('900123456-10', 'Suministros del Ruiz', 'Cra 20 #18-22', '6068810011', 'compras@suministrosruiz.com'),
@@ -427,6 +507,22 @@ CREATE TABLE `utilidades_pedidos` (
 ) ENGINE=MyISAM;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `catalogo_productos`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `catalogo_productos` AS select `t`.`nombreTienda` AS `Proveedor`,`p`.`lineaProducto` AS `Linea`,`p`.`ref` AS `Referencia`,`p`.`descripcion` AS `Producto`,`p`.`detalles` AS `Detalles`,`p`.`precio` AS `Precio`,`p`.`tiempoGarantia` AS `Garantia` from (`tienda_proveedor` `t` join `producto` `p` on((`t`.`nitTienda` = `p`.`nitTienda`))) order by `t`.`nombreTienda`,`p`.`lineaProducto`;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `clientes_mas_gastos`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `clientes_mas_gastos` AS select `u`.`nombreUsu` AS `nombreUsu`,sum(`p`.`totalPedido`) AS `total_gastado` from (`usuario` `u` join `pedido` `p` on((`u`.`cedula` = `p`.`cedulaUsu`))) group by `u`.`cedula` order by `total_gastado` desc limit 5;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `ganancias_acumuladas_ciudades`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `ganancias_acumuladas_ciudades` AS select `d`.`ciudadDirecc` AS `Ciudad`,sum((`pp`.`cantidadProdPedido` * (`pp`.`valorProdPedido` - `prod`.`costoCompra`))) AS `Ganancia` from (((`direccion_usuario` `d` left join `pedido` `p` on((`d`.`cedulaUsu` = `p`.`cedulaUsu`))) left join `pedido_producto` `pp` on((`p`.`numPedido` = `pp`.`numPedido`))) left join `producto` `prod` on((`pp`.`ref` = `prod`.`ref`))) group by `d`.`ciudadDirecc`;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `ganancias_acumuladas_cliente`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `ganancias_acumuladas_cliente` AS select `u`.`nombreUsu` AS `Cliente`,count(distinct `p`.`numPedido`) AS `Pedidos`,sum((`pp`.`cantidadProdPedido` * (`pp`.`valorProdPedido` - `prod`.`costoCompra`))) AS `Ganancia`,(sum((`pp`.`cantidadProdPedido` * (`pp`.`valorProdPedido` - `prod`.`costoCompra`))) / count(distinct `p`.`numPedido`)) AS `Promedio` from (((`usuario` `u` join `pedido` `p` on((`u`.`cedula` = `p`.`cedulaUsu`))) join `pedido_producto` `pp` on((`p`.`numPedido` = `pp`.`numPedido`))) join `producto` `prod` on((`pp`.`ref` = `prod`.`ref`))) group by `u`.`cedula`;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `informe_por_periodo`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `informe_por_periodo` AS select year(`p`.`fechaPedido`) AS `año`,month(`p`.`fechaPedido`) AS `mes`,sum(`p`.`totalPedido`) AS `total_mes` from `pedido` `p` group by year(`p`.`fechaPedido`),month(`p`.`fechaPedido`) order by `año` desc,`mes` desc;
 
@@ -439,8 +535,24 @@ DROP TABLE IF EXISTS `info_tienda_ventas_produs`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `info_tienda_ventas_produs` AS select `p`.`ref` AS `ref`,`p`.`descripcion` AS `Producto`,sum(`pp`.`cantidadProdPedido`) AS `unidades_vendidas`,sum((`pp`.`cantidadProdPedido` * `pp`.`valorProdPedido`)) AS `ingresos_totales` from (`producto` `p` join `pedido_producto` `pp` on((`p`.`ref` = `pp`.`ref`))) group by `p`.`ref` order by `ingresos_totales` desc;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `mas_despachos`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `mas_despachos` AS select `e`.`nombreEmpleado` AS `nombreEmpleado`,`t`.`nombreTienda` AS `nombreTienda`,count(0) AS `total_despachos` from ((`empleado` `e` join `despacho` `d` on((`e`.`cedulaEmpleado` = `d`.`cedulaEmpleado`))) join `tienda_proveedor` `t` on((`e`.`nitTienda` = `t`.`nitTienda`))) group by `e`.`cedulaEmpleado` order by `total_despachos` desc limit 5;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `mes_mas_ventas`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `mes_mas_ventas` AS select year(`pedido`.`fechaPedido`) AS `anno`,month(`pedido`.`fechaPedido`) AS `mes`,sum(`pedido`.`totalPedido`) AS `total_ventas` from `pedido` group by year(`pedido`.`fechaPedido`),month(`pedido`.`fechaPedido`) order by `total_ventas` desc limit 1;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `pedidos_pendientes`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `pedidos_pendientes` AS select `p`.`numPedido` AS `numPedido`,`p`.`fechaPedido` AS `fechaPedido`,`p`.`totalPedido` AS `totalPedido`,`p`.`cedulaUsu` AS `cedulaUsu` from (`pedido` `p` left join `despacho` `d` on((`p`.`numPedido` = `d`.`numPedido`))) where (`d`.`fechaDespacho` is null);
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `productos_vendidos_mayor_al_promedio`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `productos_vendidos_mayor_al_promedio` AS select `pr`.`descripcion` AS `producto`,`pr`.`lineaProducto` AS `lineaProducto`,`t`.`nombreTienda` AS `nombreTienda`,sum(`pp`.`cantidadProdPedido`) AS `unidades_vendidas`,avg(`pp`.`valorProdPedido`) AS `precio_promedio_venta`,max(`pp`.`cantidadProdPedido`) AS `mayor_cantidad_en_un_pedido` from ((`producto` `pr` join `pedido_producto` `pp` on((`pr`.`ref` = `pp`.`ref`))) join `tienda_proveedor` `t` on((`pr`.`nitTienda` = `t`.`nitTienda`))) group by `pr`.`ref` having (sum(`pp`.`cantidadProdPedido`) > (select avg(`promedios`.`total_unidades`) from (select sum(`pp2`.`cantidadProdPedido`) AS `total_unidades` from `pedido_producto` `pp2` group by `pp2`.`ref`) `promedios`)) order by `unidades_vendidas` desc;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `tiendas_superior_al_promedio`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `tiendas_superior_al_promedio` AS select `t`.`nombreTienda` AS `nombreTienda`,count(distinct `ped`.`numPedido`) AS `total_pedidos`,round(avg(`ped`.`totalPedido`),2) AS `promedio_pedido`,max(`ped`.`totalPedido`) AS `pedido_mas_alto`,sum(`ped`.`totalPedido`) AS `total_recaudado` from ((`tienda_proveedor` `t` join `despacho` `d` on((`t`.`nitTienda` = `d`.`nitTienda`))) join `pedido` `ped` on((`d`.`numPedido` = `ped`.`numPedido`))) group by `t`.`nitTienda` having (sum(`ped`.`totalPedido`) > (select avg(`promedios`.`total_por_tienda`) from (select sum(`ped2`.`totalPedido`) AS `total_por_tienda` from (`despacho` `d2` join `pedido` `ped2` on((`d2`.`numPedido` = `ped2`.`numPedido`))) group by `d2`.`nitTienda`) `promedios`)) order by `total_recaudado` desc;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `utilidades_pedidos`;
