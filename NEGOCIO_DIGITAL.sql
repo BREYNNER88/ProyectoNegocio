@@ -20,6 +20,7 @@ CREATE DATABASE IF NOT EXISTS `negociodigital` /*!40100 DEFAULT CHARACTER SET ut
 USE `negociodigital`;
 
 -- Volcando estructura para tabla negociodigital.despacho
+DROP TABLE IF EXISTS `despacho`;
 CREATE TABLE IF NOT EXISTS `despacho` (
   `idDespacho` int NOT NULL,
   `fechaDespacho` date DEFAULT NULL,
@@ -35,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `despacho` (
   CONSTRAINT `despacho_ibfk_3` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.despacho: ~30 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.despacho: ~34 rows (aproximadamente)
 INSERT INTO `despacho` (`idDespacho`, `fechaDespacho`, `numPedido`, `cedulaEmpleado`, `nitTienda`) VALUES
 	(800, '2026-05-12', 500, 75000001, '900123456-1'),
 	(801, '2026-05-04', 501, 75000012, '900123456-2'),
@@ -66,9 +67,14 @@ INSERT INTO `despacho` (`idDespacho`, `fechaDespacho`, `numPedido`, `cedulaEmple
 	(826, '2026-05-21', 526, 75000027, '900123456-7'),
 	(827, '2026-05-06', 527, 75000008, '900123456-8'),
 	(828, '2026-05-16', 528, 75000019, '900123456-9'),
-	(829, '2026-05-19', 529, 75000030, '900123456-10');
+	(829, '2026-05-19', 529, 75000030, '900123456-10'),
+	(850, NULL, 990, NULL, '900123456-2'),
+	(852, NULL, 991, NULL, '900123456-4'),
+	(853, NULL, 992, NULL, '900123456-6'),
+	(854, NULL, 999, NULL, '900123456-9');
 
 -- Volcando estructura para tabla negociodigital.direccion_usuario
+DROP TABLE IF EXISTS `direccion_usuario`;
 CREATE TABLE IF NOT EXISTS `direccion_usuario` (
   `idDireccion` varchar(20) NOT NULL,
   `nomenclatura` varchar(40) NOT NULL,
@@ -116,6 +122,7 @@ INSERT INTO `direccion_usuario` (`idDireccion`, `nomenclatura`, `numDirecc`, `ba
 	('DIR-129', 'Carrera 15', '#72-31', 'Unilago', 'Bogotá', 'Bogotá D.C.', 1053800020);
 
 -- Volcando estructura para tabla negociodigital.empleado
+DROP TABLE IF EXISTS `empleado`;
 CREATE TABLE IF NOT EXISTS `empleado` (
   `cedulaEmpleado` int NOT NULL,
   `nombreEmpleado` varchar(60) NOT NULL,
@@ -160,7 +167,35 @@ INSERT INTO `empleado` (`cedulaEmpleado`, `nombreEmpleado`, `celularEmpleado`, `
 	(75000029, 'William de J. Ángel', '3157788334', 'williamangel@gmail.com', '900123456-9'),
 	(75000030, 'Blanca Nubia Vargas', '3152233556', 'blancavargas@gmail.com', '900123456-10');
 
+-- Volcando estructura para vista negociodigital.informe_por_periodo
+DROP VIEW IF EXISTS `informe_por_periodo`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `informe_por_periodo` (
+	`año` YEAR NULL,
+	`mes` INT NULL,
+	`total_mes` DOUBLE NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista negociodigital.info_tienda_ventas
+DROP VIEW IF EXISTS `info_tienda_ventas`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `info_tienda_ventas` (
+	`Tienda` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`totalVendido` DOUBLE NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista negociodigital.info_tienda_ventas_produs
+DROP VIEW IF EXISTS `info_tienda_ventas_produs`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `info_tienda_ventas_produs` (
+	`ref` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Producto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`unidades_vendidas` DECIMAL(32,0) NULL,
+	`ingresos_totales` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para tabla negociodigital.pedido
+DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE IF NOT EXISTS `pedido` (
   `numPedido` int NOT NULL,
   `fechaPedido` date NOT NULL,
@@ -208,7 +243,18 @@ INSERT INTO `pedido` (`numPedido`, `fechaPedido`, `totalPedido`, `cedulaUsu`) VA
 	(992, '2026-05-26', 450000, 45678901),
 	(999, '2026-05-26', 150000, 23456789);
 
+-- Volcando estructura para vista negociodigital.pedidos_pendientes
+DROP VIEW IF EXISTS `pedidos_pendientes`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `pedidos_pendientes` (
+	`numPedido` INT NOT NULL,
+	`fechaPedido` DATE NOT NULL,
+	`totalPedido` FLOAT NOT NULL,
+	`cedulaUsu` INT NOT NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para tabla negociodigital.pedido_producto
+DROP TABLE IF EXISTS `pedido_producto`;
 CREATE TABLE IF NOT EXISTS `pedido_producto` (
   `numPedido` int NOT NULL,
   `ref` varchar(20) NOT NULL,
@@ -254,6 +300,7 @@ INSERT INTO `pedido_producto` (`numPedido`, `ref`, `cantidadProdPedido`, `valorP
 	(529, 'REF-229', 2, 25000);
 
 -- Volcando estructura para tabla negociodigital.producto
+DROP TABLE IF EXISTS `producto`;
 CREATE TABLE IF NOT EXISTS `producto` (
   `ref` varchar(20) NOT NULL,
   `descripcion` varchar(60) NOT NULL,
@@ -302,6 +349,7 @@ INSERT INTO `producto` (`ref`, `descripcion`, `lineaProducto`, `detalles`, `prec
 	('REF-229', 'Kit Limpieza Pantallas Celular', 'Accesorios', 'Líquido antiestático y paño de microfibra', 25000, '1 Mes', 8000, '900123456-10');
 
 -- Volcando estructura para tabla negociodigital.tienda_proveedor
+DROP TABLE IF EXISTS `tienda_proveedor`;
 CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
   `nitTienda` varchar(20) NOT NULL,
   `nombreTienda` varchar(60) NOT NULL,
@@ -325,6 +373,7 @@ INSERT INTO `tienda_proveedor` (`nitTienda`, `nombreTienda`, `direccionTienda`, 
 	('900123456-9', 'Boutique Dynamic', 'C.C. Cable Plaza Local 105', '6068749090', 'info@dynamicboutique.com');
 
 -- Volcando estructura para tabla negociodigital.usuario
+DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE IF NOT EXISTS `usuario` (
   `cedula` int NOT NULL,
   `nombreUsu` varchar(60) NOT NULL,
@@ -366,6 +415,36 @@ INSERT INTO `usuario` (`cedula`, `nombreUsu`, `telefonoFijo`, `celularUsuario`, 
 	(1053800020, 'Brayan Stiven Franco', NULL, '3107364528', 'brayanfranco@gmail.com'),
 	(1075209378, 'Jhon Pérez', NULL, '3333928910', 'jhon.perez@gmail.com'),
 	(1093765231, 'Valentina Herrera', '2100-1010', '3201112233', 'valentinaherrera@gmail.com');
+
+-- Volcando estructura para vista negociodigital.utilidades_pedidos
+DROP VIEW IF EXISTS `utilidades_pedidos`;
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `utilidades_pedidos` (
+	`numPedido` INT NOT NULL,
+	`ingresos` FLOAT NOT NULL,
+	`costos` DOUBLE NULL,
+	`utilidad` DOUBLE NULL
+) ENGINE=MyISAM;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `informe_por_periodo`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `informe_por_periodo` AS select year(`p`.`fechaPedido`) AS `año`,month(`p`.`fechaPedido`) AS `mes`,sum(`p`.`totalPedido`) AS `total_mes` from `pedido` `p` group by year(`p`.`fechaPedido`),month(`p`.`fechaPedido`) order by `año` desc,`mes` desc;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `info_tienda_ventas`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `info_tienda_ventas` AS select `t`.`nombreTienda` AS `Tienda`,sum(`p`.`totalPedido`) AS `totalVendido` from ((`tienda_proveedor` `t` join `despacho` `d` on((`t`.`nitTienda` = `d`.`nitTienda`))) join `pedido` `p` on((`d`.`numPedido` = `p`.`numPedido`))) group by `t`.`nitTienda` order by `totalVendido` desc;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `info_tienda_ventas_produs`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `info_tienda_ventas_produs` AS select `p`.`ref` AS `ref`,`p`.`descripcion` AS `Producto`,sum(`pp`.`cantidadProdPedido`) AS `unidades_vendidas`,sum((`pp`.`cantidadProdPedido` * `pp`.`valorProdPedido`)) AS `ingresos_totales` from (`producto` `p` join `pedido_producto` `pp` on((`p`.`ref` = `pp`.`ref`))) group by `p`.`ref` order by `ingresos_totales` desc;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `pedidos_pendientes`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `pedidos_pendientes` AS select `p`.`numPedido` AS `numPedido`,`p`.`fechaPedido` AS `fechaPedido`,`p`.`totalPedido` AS `totalPedido`,`p`.`cedulaUsu` AS `cedulaUsu` from (`pedido` `p` left join `despacho` `d` on((`p`.`numPedido` = `d`.`numPedido`))) where (`d`.`fechaDespacho` is null);
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `utilidades_pedidos`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `utilidades_pedidos` AS select `p`.`numPedido` AS `numPedido`,`p`.`totalPedido` AS `ingresos`,sum((`pp`.`cantidadProdPedido` * `prod`.`costoCompra`)) AS `costos`,(`p`.`totalPedido` - sum((`pp`.`cantidadProdPedido` * `prod`.`costoCompra`))) AS `utilidad` from ((`pedido` `p` join `pedido_producto` `pp` on((`p`.`numPedido` = `pp`.`numPedido`))) join `producto` `prod` on((`pp`.`ref` = `prod`.`ref`))) group by `p`.`numPedido`;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
