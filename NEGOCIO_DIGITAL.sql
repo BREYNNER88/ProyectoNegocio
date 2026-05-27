@@ -20,7 +20,6 @@ CREATE DATABASE IF NOT EXISTS `negociodigital` /*!40100 DEFAULT CHARACTER SET ut
 USE `negociodigital`;
 
 -- Volcando estructura para vista negociodigital.catalogo_productos
-DROP VIEW IF EXISTS `catalogo_productos`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `catalogo_productos` (
 	`Proveedor` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -32,8 +31,17 @@ CREATE TABLE `catalogo_productos` (
 	`Garantia` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci'
 ) ENGINE=MyISAM;
 
+-- Volcando estructura para vista negociodigital.clientes_manizales
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `clientes_manizales` (
+	`Nombre_Usuario` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Barrio` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Ciudad` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Total_Pedidos` BIGINT NOT NULL,
+	`Total_Gastado` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para vista negociodigital.clientes_mas_gastos
-DROP VIEW IF EXISTS `clientes_mas_gastos`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `clientes_mas_gastos` (
 	`nombreUsu` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -41,7 +49,6 @@ CREATE TABLE `clientes_mas_gastos` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.clientes_mayor_al_promedio
-DROP VIEW IF EXISTS `clientes_mayor_al_promedio`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `clientes_mayor_al_promedio` (
 	`cliente` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -52,7 +59,6 @@ CREATE TABLE `clientes_mayor_al_promedio` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para tabla negociodigital.despacho
-DROP TABLE IF EXISTS `despacho`;
 CREATE TABLE IF NOT EXISTS `despacho` (
   `idDespacho` int NOT NULL,
   `fechaDespacho` date DEFAULT NULL,
@@ -68,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `despacho` (
   CONSTRAINT `despacho_ibfk_3` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.despacho: ~30 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.despacho: ~34 rows (aproximadamente)
 INSERT INTO `despacho` (`idDespacho`, `fechaDespacho`, `numPedido`, `cedulaEmpleado`, `nitTienda`) VALUES
 	(800, '2026-05-12', 500, 75000001, '900123456-1'),
 	(801, '2026-05-04', 501, 75000012, '900123456-2'),
@@ -106,55 +112,52 @@ INSERT INTO `despacho` (`idDespacho`, `fechaDespacho`, `numPedido`, `cedulaEmple
 	(854, NULL, 999, NULL, '900123456-9');
 
 -- Volcando estructura para tabla negociodigital.direccion_usuario
-DROP TABLE IF EXISTS `direccion_usuario`;
 CREATE TABLE IF NOT EXISTS `direccion_usuario` (
-  `idDireccion` varchar(20) NOT NULL,
-  `nomenclatura` varchar(40) NOT NULL,
-  `numDirecc` varchar(40) NOT NULL,
+  `nomenclatura` varchar(20) NOT NULL,
+  `numDirecc` varchar(20) NOT NULL,
   `barrioDirecc` varchar(40) NOT NULL,
   `ciudadDirecc` varchar(40) NOT NULL,
   `departamentoDirecc` varchar(40) NOT NULL,
   `cedulaUsu` int NOT NULL,
-  PRIMARY KEY (`idDireccion`),
+  PRIMARY KEY (`nomenclatura`,`numDirecc`,`barrioDirecc`,`ciudadDirecc`,`departamentoDirecc`,`cedulaUsu`),
   KEY `cedulaUsu` (`cedulaUsu`),
-  CONSTRAINT `direccion_usuario_ibfk_1` FOREIGN KEY (`cedulaUsu`) REFERENCES `usuario` (`cedula`)
+  CONSTRAINT `direccion_usuario_ibfk_1` FOREIGN KEY (`cedulaUsu`) REFERENCES `usuario` (`cedulaUsu`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Volcando datos para la tabla negociodigital.direccion_usuario: ~30 rows (aproximadamente)
-INSERT INTO `direccion_usuario` (`idDireccion`, `nomenclatura`, `numDirecc`, `barrioDirecc`, `ciudadDirecc`, `departamentoDirecc`, `cedulaUsu`) VALUES
-	('DIR-100', 'Calle 45', '#12-34', 'Chipre', 'Manizales', 'Caldas', 23456789),
-	('DIR-101', 'Carrera 7', '#72-10', 'Rosales', 'Bogotá', 'Bogotá D.C.', 34567890),
-	('DIR-102', 'Calle 10', '#43E-20', 'El Poblado', 'Medellín', 'Antioquia', 45678901),
-	('DIR-103', 'Avenida 6N', '#15N-30', 'Granada', 'Cali', 'Valle del Cauca', 56789012),
-	('DIR-104', 'Calle 65', '#89-12', 'Alta Suiza', 'Manizales', 'Caldas', 67890123),
-	('DIR-105', 'Carrera 15', '#93-40', 'Chicó Norte', 'Bogotá', 'Bogotá D.C.', 78901234),
-	('DIR-106', 'Circular 4', '#73-15', 'Laureles', 'Medellín', 'Antioquia', 89012345),
-	('DIR-107', 'Calle 18', '#105-40', 'Ciudad Jardín', 'Cali', 'Valle del Cauca', 90123456),
-	('DIR-108', 'Calle 60', '#33-12', 'La Carola', 'Manizales', 'Caldas', 1075209378),
-	('DIR-109', 'Calle 26', '#4A-15', 'La Macarena', 'Bogotá', 'Bogotá D.C.', 1093765231),
-	('DIR-110', 'Carrera 70', '#45-12', 'Estadio', 'Medellín', 'Antioquia', 1053800001),
-	('DIR-111', 'Calle 5', '#24-80', 'San Fernando', 'Cali', 'Valle del Cauca', 1053800002),
-	('DIR-112', 'Calle 52', '#18-92', 'Alta Suiza', 'Manizales', 'Caldas', 1053800003),
-	('DIR-113', 'Calle 100', '#19-55', 'Chicó', 'Bogotá', 'Bogotá D.C.', 1053800004),
-	('DIR-114', 'Carrera 35', '#7-12', 'El Poblado', 'Medellín', 'Antioquia', 1053800005),
-	('DIR-115', 'Avenida 3N', '#23N-45', 'Versalles', 'Cali', 'Valle del Cauca', 1053800006),
-	('DIR-116', 'Calle 11', '#22-83', 'San Jorge', 'Manizales', 'Caldas', 1053800007),
-	('DIR-117', 'Carrera 11', '#85-32', 'Andino', 'Bogotá', 'Bogotá D.C.', 1053800008),
-	('DIR-118', 'Calle 50', '#40-25', 'Centro', 'Medellín', 'Antioquia', 1053800009),
-	('DIR-119', 'Carrera 66', '#10-22', 'El Limonar', 'Cali', 'Valle del Cauca', 1053800010),
-	('DIR-120', 'Calle 55', '#43-21', 'El Cable', 'Manizales', 'Caldas', 1053800011),
-	('DIR-121', 'Calle 140', '#12-88', 'Cedritos', 'Bogotá', 'Bogotá D.C.', 1053800012),
-	('DIR-122', 'Carrera 80', '#32-34', 'Belén', 'Medellín', 'Antioquia', 1053800013),
-	('DIR-123', 'Calle 9', '#38-11', 'Los Cámbulos', 'Cali', 'Valle del Cauca', 1053800014),
-	('DIR-124', 'Calle 24', '#77-11', 'Palermo', 'Manizales', 'Caldas', 1053800015),
-	('DIR-125', 'Carrera 13', '#45-16', 'Chapinero', 'Bogotá', 'Bogotá D.C.', 1053800016),
-	('DIR-126', 'Calle 33', '#65-10', 'Conquistadores', 'Medellín', 'Antioquia', 1053800017),
-	('DIR-127', 'Avenida 4N', '#10-25', 'Centenario', 'Cali', 'Valle del Cauca', 1053800018),
-	('DIR-128', 'Calle 50', '#12-49', 'Milán', 'Manizales', 'Caldas', 1053800019),
-	('DIR-129', 'Carrera 15', '#72-31', 'Unilago', 'Bogotá', 'Bogotá D.C.', 1053800020);
+INSERT INTO `direccion_usuario` (`nomenclatura`, `numDirecc`, `barrioDirecc`, `ciudadDirecc`, `departamentoDirecc`, `cedulaUsu`) VALUES
+	('Calle 45', '#12-34', 'Chipre', 'Manizales', 'Caldas', 23456789),
+	('Carrera 7', '#72-10', 'Rosales', 'Bogotá', 'Bogotá D.C.', 34567890),
+	('Calle 10', '#43E-20', 'El Poblado', 'Medellín', 'Antioquia', 45678901),
+	('Avenida 6N', '#15N-30', 'Granada', 'Cali', 'Valle del Cauca', 56789012),
+	('Calle 65', '#89-12', 'Alta Suiza', 'Manizales', 'Caldas', 67890123),
+	('Carrera 15', '#93-40', 'Chicó Norte', 'Bogotá', 'Bogotá D.C.', 78901234),
+	('Circular 4', '#73-15', 'Laureles', 'Medellín', 'Antioquia', 89012345),
+	('Calle 18', '#105-40', 'Ciudad Jardín', 'Cali', 'Valle del Cauca', 90123456),
+	('Carrera 70', '#45-12', 'Estadio', 'Medellín', 'Antioquia', 1053800001),
+	('Calle 5', '#24-80', 'San Fernando', 'Cali', 'Valle del Cauca', 1053800002),
+	('Calle 52', '#18-92', 'Alta Suiza', 'Manizales', 'Caldas', 1053800003),
+	('Calle 100', '#19-55', 'Chicó', 'Bogotá', 'Bogotá D.C.', 1053800004),
+	('Carrera 35', '#7-12', 'El Poblado', 'Medellín', 'Antioquia', 1053800005),
+	('Avenida 3N', '#23N-45', 'Versalles', 'Cali', 'Valle del Cauca', 1053800006),
+	('Calle 11', '#22-83', 'San Jorge', 'Manizales', 'Caldas', 1053800007),
+	('Carrera 11', '#85-32', 'Andino', 'Bogotá', 'Bogotá D.C.', 1053800008),
+	('Calle 50', '#40-25', 'Centro', 'Medellín', 'Antioquia', 1053800009),
+	('Carrera 66', '#10-22', 'El Limonar', 'Cali', 'Valle del Cauca', 1053800010),
+	('Calle 55', '#43-21', 'El Cable', 'Manizales', 'Caldas', 1053800011),
+	('Calle 140', '#12-88', 'Cedritos', 'Bogotá', 'Bogotá D.C.', 1053800012),
+	('Carrera 80', '#32-34', 'Belén', 'Medellín', 'Antioquia', 1053800013),
+	('Calle 9', '#38-11', 'Los Cámbulos', 'Cali', 'Valle del Cauca', 1053800014),
+	('Calle 24', '#77-11', 'Palermo', 'Manizales', 'Caldas', 1053800015),
+	('Carrera 13', '#45-16', 'Chapinero', 'Bogotá', 'Bogotá D.C.', 1053800016),
+	('Calle 33', '#65-10', 'Conquistadores', 'Medellín', 'Antioquia', 1053800017),
+	('Avenida 4N', '#10-25', 'Centenario', 'Cali', 'Valle del Cauca', 1053800018),
+	('Calle 50', '#12-49', 'Milán', 'Manizales', 'Caldas', 1053800019),
+	('Carrera 15', '#72-31', 'Unilago', 'Bogotá', 'Bogotá D.C.', 1053800020),
+	('Calle 60', '#33-12', 'La Carola', 'Manizales', 'Caldas', 1075209378),
+	('Calle 26', '#4A-15', 'La Macarena', 'Bogotá', 'Bogotá D.C.', 1093765231);
 
 -- Volcando estructura para tabla negociodigital.empleado
-DROP TABLE IF EXISTS `empleado`;
 CREATE TABLE IF NOT EXISTS `empleado` (
   `cedulaEmpleado` int NOT NULL,
   `nombreEmpleado` varchar(60) NOT NULL,
@@ -200,15 +203,13 @@ INSERT INTO `empleado` (`cedulaEmpleado`, `nombreEmpleado`, `celularEmpleado`, `
 	(75000030, 'Blanca Nubia Vargas', '3152233556', 'blancavargas@gmail.com', '900123456-10');
 
 -- Volcando estructura para vista negociodigital.ganancias_acumuladas_ciudades
-DROP VIEW IF EXISTS `ganancias_acumuladas_ciudades`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `ganancias_acumuladas_ciudades` (
-	`Ciudad` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Ciudad` VARCHAR(40) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
 	`Ganancia` DOUBLE NULL
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.ganancias_acumuladas_cliente
-DROP VIEW IF EXISTS `ganancias_acumuladas_cliente`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `ganancias_acumuladas_cliente` (
 	`Cliente` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -218,7 +219,6 @@ CREATE TABLE `ganancias_acumuladas_cliente` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.informe_por_periodo
-DROP VIEW IF EXISTS `informe_por_periodo`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `informe_por_periodo` (
 	`año` YEAR NULL,
@@ -227,7 +227,6 @@ CREATE TABLE `informe_por_periodo` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.info_tienda_ventas
-DROP VIEW IF EXISTS `info_tienda_ventas`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `info_tienda_ventas` (
 	`Tienda` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -235,7 +234,6 @@ CREATE TABLE `info_tienda_ventas` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.info_tienda_ventas_produs
-DROP VIEW IF EXISTS `info_tienda_ventas_produs`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `info_tienda_ventas_produs` (
 	`ref` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -245,7 +243,6 @@ CREATE TABLE `info_tienda_ventas_produs` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.lineas_con_ingreso_mayor_al_promedio
-DROP VIEW IF EXISTS `lineas_con_ingreso_mayor_al_promedio`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `lineas_con_ingreso_mayor_al_promedio` (
 	`lineaProducto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -257,7 +254,6 @@ CREATE TABLE `lineas_con_ingreso_mayor_al_promedio` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.mas_despachos
-DROP VIEW IF EXISTS `mas_despachos`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `mas_despachos` (
 	`nombreEmpleado` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -266,7 +262,6 @@ CREATE TABLE `mas_despachos` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.mes_mas_ventas
-DROP VIEW IF EXISTS `mes_mas_ventas`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `mes_mas_ventas` (
 	`anno` YEAR NULL,
@@ -275,7 +270,6 @@ CREATE TABLE `mes_mas_ventas` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para tabla negociodigital.pedido
-DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE IF NOT EXISTS `pedido` (
   `numPedido` int NOT NULL,
   `fechaPedido` date NOT NULL,
@@ -286,7 +280,7 @@ CREATE TABLE IF NOT EXISTS `pedido` (
   CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`cedulaUsu`) REFERENCES `usuario` (`cedula`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.pedido: ~30 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.pedido: ~34 rows (aproximadamente)
 INSERT INTO `pedido` (`numPedido`, `fechaPedido`, `totalPedido`, `cedulaUsu`) VALUES
 	(500, '2025-12-15', 240000, 23456789),
 	(501, '2025-12-15', 500000, 1053800005),
@@ -323,8 +317,14 @@ INSERT INTO `pedido` (`numPedido`, `fechaPedido`, `totalPedido`, `cedulaUsu`) VA
 	(992, '2026-05-26', 450000, 45678901),
 	(999, '2026-05-26', 150000, 23456789);
 
+-- Volcando estructura para vista negociodigital.pedidos_departamento
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `pedidos_departamento` (
+	`Departamento` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Cantidad` BIGINT NOT NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para vista negociodigital.pedidos_pendientes
-DROP VIEW IF EXISTS `pedidos_pendientes`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `pedidos_pendientes` (
 	`numPedido` INT NOT NULL,
@@ -334,7 +334,6 @@ CREATE TABLE `pedidos_pendientes` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para tabla negociodigital.pedido_producto
-DROP TABLE IF EXISTS `pedido_producto`;
 CREATE TABLE IF NOT EXISTS `pedido_producto` (
   `numPedido` int NOT NULL,
   `ref` varchar(20) NOT NULL,
@@ -346,7 +345,7 @@ CREATE TABLE IF NOT EXISTS `pedido_producto` (
   CONSTRAINT `pedido_producto_ibfk_2` FOREIGN KEY (`ref`) REFERENCES `producto` (`ref`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.pedido_producto: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.pedido_producto: ~30 rows (aproximadamente)
 INSERT INTO `pedido_producto` (`numPedido`, `ref`, `cantidadProdPedido`, `valorProdPedido`) VALUES
 	(500, 'REF-200', 2, 120000),
 	(501, 'REF-201', 2, 250000),
@@ -380,7 +379,6 @@ INSERT INTO `pedido_producto` (`numPedido`, `ref`, `cantidadProdPedido`, `valorP
 	(529, 'REF-229', 2, 25000);
 
 -- Volcando estructura para tabla negociodigital.producto
-DROP TABLE IF EXISTS `producto`;
 CREATE TABLE IF NOT EXISTS `producto` (
   `ref` varchar(20) NOT NULL,
   `descripcion` varchar(60) NOT NULL,
@@ -395,7 +393,7 @@ CREATE TABLE IF NOT EXISTS `producto` (
   CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`nitTienda`) REFERENCES `tienda_proveedor` (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.producto: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.producto: ~30 rows (aproximadamente)
 INSERT INTO `producto` (`ref`, `descripcion`, `lineaProducto`, `detalles`, `precio`, `tiempoGarantia`, `costoCompra`, `nitTienda`) VALUES
 	('REF-200', 'Mouse Gamer RGB Pro', 'Tecnología', 'Alta resolución 16000 DPI, Ergonómico', 120000, '1 Año', 75000, '900123456-1'),
 	('REF-201', 'Teclado Mecánico Retroiluminado', 'Tecnología', 'Switch azul, Anti-ghosting completo', 250000, '1 Año', 150000, '900123456-2'),
@@ -428,8 +426,16 @@ INSERT INTO `producto` (`ref`, `descripcion`, `lineaProducto`, `detalles`, `prec
 	('REF-228', 'Cable HDMI de Alta Velocidad 4K', 'Accesorios', 'Soporta resolución 4K a 60Hz, longitud 3m', 35000, '6 Meses', 12000, '900123456-9'),
 	('REF-229', 'Kit Limpieza Pantallas Celular', 'Accesorios', 'Líquido antiestático y paño de microfibra', 25000, '1 Mes', 8000, '900123456-10');
 
+-- Volcando estructura para vista negociodigital.productos_mas_de_dos_pedidos
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `productos_mas_de_dos_pedidos` (
+	`Referencia_Producto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Descripcion` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`Total_Unidades_Vendidas` DECIMAL(32,0) NULL,
+	`Ingreso_Total_Generado` DOUBLE NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para vista negociodigital.productos_vendidos_mayor_al_promedio
-DROP VIEW IF EXISTS `productos_vendidos_mayor_al_promedio`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `productos_vendidos_mayor_al_promedio` (
 	`producto` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -441,7 +447,6 @@ CREATE TABLE `productos_vendidos_mayor_al_promedio` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista negociodigital.tiendas_superior_al_promedio
-DROP VIEW IF EXISTS `tiendas_superior_al_promedio`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `tiendas_superior_al_promedio` (
 	`nombreTienda` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
@@ -452,7 +457,6 @@ CREATE TABLE `tiendas_superior_al_promedio` (
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para tabla negociodigital.tienda_proveedor
-DROP TABLE IF EXISTS `tienda_proveedor`;
 CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
   `nitTienda` varchar(20) NOT NULL,
   `nombreTienda` varchar(60) NOT NULL,
@@ -462,7 +466,7 @@ CREATE TABLE IF NOT EXISTS `tienda_proveedor` (
   PRIMARY KEY (`nitTienda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Volcando datos para la tabla negociodigital.tienda_proveedor: ~6 rows (aproximadamente)
+-- Volcando datos para la tabla negociodigital.tienda_proveedor: ~10 rows (aproximadamente)
 INSERT INTO `tienda_proveedor` (`nitTienda`, `nombreTienda`, `direccionTienda`, `telTienda`, `emailTienda`) VALUES
 	('900123456-1', 'TecnoManizales SAS', 'Av. Santander #55-12', '6068851010', 'contacto@tecnomanizales.com'),
 	('900123456-10', 'Suministros del Ruiz', 'Cra 20 #18-22', '6068810011', 'compras@suministrosruiz.com'),
@@ -476,7 +480,6 @@ INSERT INTO `tienda_proveedor` (`nitTienda`, `nombreTienda`, `direccionTienda`, 
 	('900123456-9', 'Boutique Dynamic', 'C.C. Cable Plaza Local 105', '6068749090', 'info@dynamicboutique.com');
 
 -- Volcando estructura para tabla negociodigital.usuario
-DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE IF NOT EXISTS `usuario` (
   `cedula` int NOT NULL,
   `nombreUsu` varchar(60) NOT NULL,
@@ -520,7 +523,6 @@ INSERT INTO `usuario` (`cedula`, `nombreUsu`, `telefonoFijo`, `celularUsuario`, 
 	(1093765231, 'Valentina Herrera', '2100-1010', '3201112233', 'valentinaherrera@gmail.com');
 
 -- Volcando estructura para vista negociodigital.utilidades_pedidos
-DROP VIEW IF EXISTS `utilidades_pedidos`;
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `utilidades_pedidos` (
 	`numPedido` INT NOT NULL,
@@ -532,6 +534,10 @@ CREATE TABLE `utilidades_pedidos` (
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `catalogo_productos`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `catalogo_productos` AS select `t`.`nombreTienda` AS `Proveedor`,`p`.`lineaProducto` AS `Linea`,`p`.`ref` AS `Referencia`,`p`.`descripcion` AS `Producto`,`p`.`detalles` AS `Detalles`,`p`.`precio` AS `Precio`,`p`.`tiempoGarantia` AS `Garantia` from (`tienda_proveedor` `t` join `producto` `p` on((`t`.`nitTienda` = `p`.`nitTienda`))) order by `t`.`nombreTienda`,`p`.`lineaProducto`;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `clientes_manizales`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `clientes_manizales` AS select `u`.`nombreUsu` AS `Nombre_Usuario`,`d`.`barrioDirecc` AS `Barrio`,`d`.`ciudadDirecc` AS `Ciudad`,count(`p`.`numPedido`) AS `Total_Pedidos`,sum(`p`.`totalPedido`) AS `Total_Gastado` from ((`usuario` `u` join `direccion_usuario` `d` on((`u`.`cedula` = `d`.`cedulaUsu`))) join `pedido` `p` on((`u`.`cedula` = `p`.`cedulaUsu`))) where (`d`.`ciudadDirecc` = 'Manizales') group by `u`.`cedula`,`u`.`nombreUsu`,`d`.`barrioDirecc`,`d`.`ciudadDirecc` order by `Total_Gastado` desc;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `clientes_mas_gastos`;
@@ -574,8 +580,16 @@ DROP TABLE IF EXISTS `mes_mas_ventas`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `mes_mas_ventas` AS select year(`pedido`.`fechaPedido`) AS `anno`,month(`pedido`.`fechaPedido`) AS `mes`,sum(`pedido`.`totalPedido`) AS `total_ventas` from `pedido` group by year(`pedido`.`fechaPedido`),month(`pedido`.`fechaPedido`) order by `total_ventas` desc limit 1;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `pedidos_departamento`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `pedidos_departamento` AS select `d`.`departamentoDirecc` AS `Departamento`,count(`p`.`numPedido`) AS `Cantidad` from ((`direccion_usuario` `d` join `usuario` `u` on((`d`.`cedulaUsu` = `u`.`cedula`))) join `pedido` `p` on((`u`.`cedula` = `p`.`cedulaUsu`))) group by `d`.`departamentoDirecc`;
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `pedidos_pendientes`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `pedidos_pendientes` AS select `p`.`numPedido` AS `numPedido`,`p`.`fechaPedido` AS `fechaPedido`,`p`.`totalPedido` AS `totalPedido`,`p`.`cedulaUsu` AS `cedulaUsu` from (`pedido` `p` left join `despacho` `d` on((`p`.`numPedido` = `d`.`numPedido`))) where (`d`.`fechaDespacho` is null);
+
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `productos_mas_de_dos_pedidos`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `productos_mas_de_dos_pedidos` AS select `p`.`ref` AS `Referencia_Producto`,`p`.`descripcion` AS `Descripcion`,sum(`pp`.`cantidadProdPedido`) AS `Total_Unidades_Vendidas`,sum(`pp`.`valorProdPedido`) AS `Ingreso_Total_Generado` from (`producto` `p` join `pedido_producto` `pp` on((`p`.`ref` = `pp`.`ref`))) group by `p`.`ref`,`p`.`descripcion` having (count(distinct `pp`.`numPedido`) > 2) order by `Ingreso_Total_Generado` desc;
 
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `productos_vendidos_mayor_al_promedio`;
